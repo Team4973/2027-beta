@@ -6,7 +6,8 @@ RobotPy (Python WPILib) project for FRC Team 4973's 2027 robot on the Limelight 
 
     uv run python -m robotpy sim      # simulator GUI
     uv run python -m robotpy test     # all tests
-    uv run pytest tests/test_controls.py -q   # one fast test file
+    uv run pytest tests/test_controls.py -q   # one fast pure-logic file (no robot fixtures)
+    uv run python -m robotpy test -- -k drivetrain   # select robot tests with -k, never by path
     uv run ruff check . && uv run ruff format .
     uv run python -m robotpy deploy   # to SystemCore (needs robot network)
 
@@ -21,6 +22,7 @@ RobotPy (Python WPILib) project for FRC Team 4973's 2027 robot on the Limelight 
 - Only `subsystems/drivetrain.py` and `subsystems/vision.py` import vendor libraries.
 - If you change a controller binding, update `docs/controls.md` in the same PR.
 - Tests use `wpilib.testing` (fixtures `control`, `robot`). pyfrc no longer exists.
+- Robot tests must run one-per-process (`robotpy test` default). Never `--no-isolation`; see `docs/versions.md`.
 
 ## Layout
 

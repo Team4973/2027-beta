@@ -5,7 +5,7 @@ from typing import overload
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
 from phoenix6 import SignalLogger, swerve, units, utils
-from wpilib import Alliance, MatchState, Notifier, RobotController, RobotState
+from wpilib import Alliance, MatchState, Notifier, RobotController, RobotState, Timer
 from wpilib.sysid import SysIdRoutineLog
 from wpimath import ChassisVelocities, Pose2d, Rotation2d
 
@@ -293,7 +293,10 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
 
     def _start_sim_thread(self):
         def _sim_periodic():
-            current_time = utils.get_current_time_seconds()
+            # HAL sim time, not utils.get_current_time_seconds(): the Phoenix clock is
+            # wall-clock in sim, so headless tests that fast-forward time (stepTiming)
+            # would under-integrate physics. In the real-time GUI the two agree.
+            current_time = Timer.getTimestamp()
             delta_time = current_time - self._last_sim_time
             self._last_sim_time = current_time
 
@@ -301,7 +304,7 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
             self.update_sim_state(delta_time, RobotController.getBatteryVoltage())
 
         # Run simulation at a faster rate so PID gains behave more reasonably
-        self._last_sim_time = utils.get_current_time_seconds()
+        self._last_sim_time = Timer.getTimestamp()
         self._sim_notifier = Notifier(_sim_periodic)
         self._sim_notifier.startPeriodic(self._SIM_LOOP_PERIOD)
 

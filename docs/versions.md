@@ -36,3 +36,22 @@ and phoenix6 26.50.0a1 still calls `RobotBase.isSimulation()`. `photonlibpy
 | `CommandXboxController` | `CommandNiDsXboxController` |
 | `robotInit()` | `__init__()` |
 | `from pyfrc.tests import *` | `from wpilib.testing.robot_tests import *` |
+
+## Testing gotchas (phoenix6 26.50.0a1 + wpilib.testing)
+
+- **Sim clock.** `phoenix6.utils.get_current_time_seconds()` is wall-clock in
+  simulation, but `wpilib.Notifier` fires on HAL sim time. The Tuner X template's
+  `_sim_periodic` computes `delta_time` from the Phoenix clock, so headless tests
+  that fast-forward time (`control.step_timing`) under-integrate physics by
+  whatever ratio the machine runs at (we measured 0.43 m/s for a 1 m/s command).
+  `subsystems/drivetrain.py` uses `wpilib.Timer.getTimestamp()` instead. Keep that
+  edit when regenerating from Tuner X.
+- **One robot per process.** `phoenix6.wpiutils.auto_feed_enable.AutoFeedEnable` is
+  a process-wide singleton whose `Notifier` is destroyed by the test harness's
+  `hal.simulation.resetGlobalHandles()` teardown. A second robot booted in the same
+  process never gets `feed_enable()` and every TalonFX outputs 0 V. `robotpy test`
+  isolates each test in its own process by default — do **not** use
+  `--no-isolation`, and do not pass test file paths as arguments (the isolated
+  worker re-collects the whole file in one process); select tests with `-k`.
+- `control.step_timing(seconds=s)` steps `s + 0.2` (loop condition is
+  `tm < seconds + 0.01`). Don't rely on it for exact durations.
