@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# RobotPy / Phoenix
+logs/
+*.hoot
+*.wpilog
+ctre_sim/
+networktables.json
+networktables.json.bck
+simgui.json
+simgui-window.json
+simgui-ds.json
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/

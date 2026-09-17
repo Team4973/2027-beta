@@ -1,0 +1,32 @@
+[project]
+name = "team4973-2027-beta"
+version = "0.1.0"
+description = "Team 4973 2027 season robot code (RobotPy on SystemCore)"
+requires-python = ">=3.13,<3.15"
+dependencies = [
+    "robotpy[commands2,sim]==2027.0.0a6.post1",
+    "phoenix6==26.50.0a1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "pytest>=8",
+]
+
+[tool.robotpy]
+# Exact pins. See docs/versions.md before changing anything here.
+robotpy_version = "2027.0.0a6.post1"
+components = ["commands2"]
+requires = ["phoenix6==26.50.0a1"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["constants/tuner_constants.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
