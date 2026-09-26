@@ -4,6 +4,7 @@
 |---|---|---|
 | robotpy | 2027.0.0a6.post1 | Last alpha with the camelCase wpilib API that phoenix6 26.50.0a1 was built against |
 | phoenix6 | 26.50.0a1 | Only SystemCore-capable Phoenix 6 Python release (aarch64 wheel) as of 2026-09 |
+| pygame-ce (dev only) | 2.5.8 | SDL 2.32 for `sim/gamepad_bridge.py`: reads USB gamepads the sim GUI can't (wired Xbox Series on macOS). Never deployed |
 
 ## Verified 2026-09-12
 
@@ -33,7 +34,7 @@ and phoenix6 26.50.0a1 still calls `RobotBase.isSimulation()`. `photonlibpy
 | `DriverStation.getAlliance()` | `MatchState.getAlliance()` |
 | `DriverStation.Alliance.kRed` | `Alliance.RED` |
 | `DriverStation.isDisabled()` | `RobotState.isDisabled()` |
-| `CommandXboxController` | `CommandNiDsXboxController` |
+| `CommandXboxController` | `wpilib.Gamepad` + `Trigger(pad.getSouthFaceButton)` (not `CommandNiDsXboxController`: old NI DS indices, wrong right stick/bumpers in sim) |
 | `robotInit()` | `__init__()` |
 | `from pyfrc.tests import *` | `from wpilib.testing.robot_tests import *` |
 

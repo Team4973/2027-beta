@@ -8,6 +8,8 @@
 | A (hold) | Brake: wheels in an X |
 | X | Reset field-centric heading (robot's current facing becomes "forward") |
 
+Read through `wpilib.Gamepad` (2027 SDL layout; A = south face, X = west face).
+
 Stick shaping: 10% deadband, squared response, 4 m/s² slew limit. See `controls.py`.
 
 **If you change a binding, update this table in the same PR.**

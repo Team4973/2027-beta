@@ -17,6 +17,8 @@ class MyRobot(commands2.TimedCommandRobot):
         self.autonomous_command: commands2.Command | None = None
 
     def robotPeriodic(self) -> None:
+        # Sim-only USB gamepad feed; must land right before the scheduler reads the sticks.
+        self.container.update_sim_gamepad()
         super().robotPeriodic()  # runs the CommandScheduler
         self.container.update_telemetry()
 

@@ -21,6 +21,11 @@ A 22" four-module swerve drive base. See `docs/versions.md` for the pins.
 
 macOS: if the controller doesn't appear, grant the terminal Bluetooth/Input Monitoring
 permission in System Settings → Privacy & Security, then relaunch.
+
+**Wired Xbox Series controller on macOS:** the sim GUI lists it as "Controller" but reads
+no axes or buttons (it's missing from the GUI's built-in mapping table). The sim reads it
+through SDL instead (`sim/gamepad_bridge.py`) and feeds it into port 0 automatically.
+Leave slot 0 in the **Joysticks** panel **empty**, and skip steps 2–3.
 No controller? Map the **Keyboard 0** virtual joystick into slot 0 instead (WASD + arrows).
 
 ## Tests
