@@ -2,11 +2,31 @@
 
 | Package | Pin | Why |
 |---|---|---|
-| robotpy | 2027.0.0a6.post1 | Last alpha with the camelCase wpilib API that phoenix6 26.50.0a1 was built against |
-| phoenix6 | 26.50.0a1 | Only SystemCore-capable Phoenix 6 Python release (aarch64 wheel) as of 2026-09 |
+| robotpy | 2027.0.0a8 | Latest alpha (2026-11-01); snake_case API |
+| phoenix6 | 26.70.0a2 | First Phoenix 6 alpha (2026-09-18) that imports on robotpy alpha-7+ |
 | pygame-ce (dev only) | 2.5.8 | SDL 2.32 for `sim/gamepad_bridge.py`: reads USB gamepads the sim GUI can't (wired Xbox Series on macOS). Never deployed |
 
-## Verified 2026-09-12
+## Verified 2026-11-20 (alpha-8)
+
+On macOS, `uv run python -m robotpy test` passes on this pair (`test_opmode` skips: we
+publish no OpModes yet). Not yet driven in the sim GUI with a controller.
+
+Changes the bump needed beyond the snake_case rename:
+
+| alpha-6 / phoenix6 26.50.0a1 | alpha-8 / phoenix6 26.70.0a2 |
+|---|---|
+| `wpilib.SmartDashboard.putData("Field", field)` | `tunables.publish("Field", field)` → NT `/Tunables/Field` |
+| `pose.X()`, `pose.Y()` | `pose.x`, `pose.y` (properties); `pose.rotation()` is still a method |
+| `gamepad.getSouthFaceButton` / `getWestFaceButton` | `get_face_down_button` / `get_face_left_button` |
+| `SysIdRoutine.Config(stepVoltage=, rampRate=, recordState=)` | `step_voltage=`, `ramp_rate=`, `record_state=` |
+| `CANBus("", "./logs/example.hoot")` | `CANBus("")` (no hoot-replay argument) |
+| `SwerveDrivetrainConstants().with_can_bus_name(canbus.name)` | `.with_network(canbus)` |
+
+The last two are hand edits to Tuner X output in `constants/tuner_constants.py`; redo them
+if you regenerate with a Tuner X that predates 26.70. On SystemCore, `CANBus("")` selects
+`can_s2`.
+
+## History: verified 2026-09-12 (alpha-6)
 
 On macOS, a copy of `2026-rebuilt`'s drivetrain runs in the Phoenix 6 swerve sim
 and all four `wpilib.testing.robot_tests` pass on this pair.
@@ -24,7 +44,7 @@ and phoenix6 26.50.0a1 still calls `RobotBase.isSimulation()`. `photonlibpy
 4. If the bump crosses into alpha-7+, budget a full snake_case rename of every
    `wpilib`/`wpimath`/`commands2` call (see roadmap Phase 8).
 
-## alpha-6 API cheat sheet (differs from 2026)
+## 2026 → 2027 API cheat sheet (alpha-6 names; snake_case them for alpha-7+)
 
 | 2026 | 2027 alpha-6 |
 |---|---|
@@ -38,14 +58,14 @@ and phoenix6 26.50.0a1 still calls `RobotBase.isSimulation()`. `photonlibpy
 | `robotInit()` | `__init__()` |
 | `from pyfrc.tests import *` | `from wpilib.testing.robot_tests import *` |
 
-## Testing gotchas (phoenix6 26.50.0a1 + wpilib.testing)
+## Testing gotchas (phoenix6 + wpilib.testing; seen on 26.50.0a1)
 
 - **Sim clock.** `phoenix6.utils.get_current_time_seconds()` is wall-clock in
   simulation, but `wpilib.Notifier` fires on HAL sim time. The Tuner X template's
   `_sim_periodic` computes `delta_time` from the Phoenix clock, so headless tests
   that fast-forward time (`control.step_timing`) under-integrate physics by
   whatever ratio the machine runs at (we measured 0.43 m/s for a 1 m/s command).
-  `subsystems/drivetrain.py` uses `wpilib.Timer.getTimestamp()` instead. Keep that
+  `subsystems/drivetrain.py` uses `wpilib.Timer.get_timestamp()` instead. Keep that
   edit when regenerating from Tuner X.
 - **One robot per process.** `phoenix6.wpiutils.auto_feed_enable.AutoFeedEnable` is
   a process-wide singleton whose `Notifier` is destroyed by the test harness's

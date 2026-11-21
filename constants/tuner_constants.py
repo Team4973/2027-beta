@@ -6,7 +6,7 @@
 
 from typing import TYPE_CHECKING, overload
 from phoenix6 import CANBus, configs, hardware, signals, swerve, units
-from wpimath.units import inchesToMeters
+from wpimath.units import inches_to_meters
 
 from constants import robot_physical as rp
 
@@ -87,7 +87,7 @@ class TunerConstants:
 
     # CAN bus that the devices are located on;
     # All swerve devices must share the same CAN bus
-    canbus = CANBus("", "./logs/example.hoot")
+    canbus = CANBus("")
 
     # Theoretical free speed (m/s) at 12 V applied output;
     # This needs to be tuned to your individual robot
@@ -99,7 +99,7 @@ class TunerConstants:
 
     _drive_gear_ratio = 6.746031746031747
     _steer_gear_ratio = 21.428571428571427
-    _wheel_radius: units.meter = inchesToMeters(1.93)
+    _wheel_radius: units.meter = inches_to_meters(1.93)
 
     _invert_left_side = True
     _invert_right_side = False
@@ -115,7 +115,7 @@ class TunerConstants:
 
     drivetrain_constants = (
         swerve.SwerveDrivetrainConstants()
-        .with_can_bus_name(canbus.name)
+        .with_network(canbus)
         .with_pigeon2_id(_pigeon_id)
         .with_pigeon2_configs(_pigeon_configs)
     )

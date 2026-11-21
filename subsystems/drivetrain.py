@@ -23,9 +23,9 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
 
     _SIM_LOOP_PERIOD: units.second = 0.004  # 4 ms
 
-    _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(0)
+    _BLUE_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.from_degrees(0)
     """Blue alliance sees forward as 0 degrees (toward red alliance wall)"""
-    _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.fromDegrees(180)
+    _RED_ALLIANCE_PERSPECTIVE_ROTATION = Rotation2d.from_degrees(180)
     """Red alliance sees forward as 180 degrees (toward blue alliance wall)"""
 
     @overload
@@ -148,11 +148,11 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
             SysIdRoutine.Config(
                 # Use default ramp rate (1 V/s) and timeout (10 s)
                 # Reduce dynamic voltage to 4 V to prevent brownout
-                stepVoltage=4.0,
+                step_voltage=4.0,
                 # Log state with SignalLogger class
-                recordState=lambda state: (
+                record_state=lambda state: (
                     SignalLogger.write_string(
-                        "SysIdTranslation_State", SysIdRoutineLog.stateEnumToString(state)
+                        "SysIdTranslation_State", SysIdRoutineLog.state_enum_to_string(state)
                     )
                     and None
                 ),
@@ -174,11 +174,11 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
             SysIdRoutine.Config(
                 # Use default ramp rate (1 V/s) and timeout (10 s)
                 # Use dynamic voltage of 7 V
-                stepVoltage=7.0,
+                step_voltage=7.0,
                 # Log state with SignalLogger class
-                recordState=lambda state: (
+                record_state=lambda state: (
                     SignalLogger.write_string(
-                        "SysIdSteer_State", SysIdRoutineLog.stateEnumToString(state)
+                        "SysIdSteer_State", SysIdRoutineLog.state_enum_to_string(state)
                     )
                     and None
                 ),
@@ -197,14 +197,14 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
         self._sys_id_routine_rotation = SysIdRoutine(
             SysIdRoutine.Config(
                 # This is in radians per second², but SysId only supports "volts per second"
-                rampRate=math.pi / 6,
+                ramp_rate=math.pi / 6,
                 # Use dynamic voltage of 7 V
-                stepVoltage=7.0,
+                step_voltage=7.0,
                 # Use default timeout (10 s)
                 # Log state with SignalLogger class
-                recordState=lambda state: (
+                record_state=lambda state: (
                     SignalLogger.write_string(
-                        "SysIdSteer_State", SysIdRoutineLog.stateEnumToString(state)
+                        "SysIdSteer_State", SysIdRoutineLog.state_enum_to_string(state)
                     )
                     and None
                 ),
@@ -281,8 +281,8 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
         # Otherwise, only check and apply the operator perspective if the DS is disabled.
         # This ensures driving behavior doesn't change until an explicit disable event
         # occurs during testing.
-        if not self._has_applied_operator_perspective or RobotState.isDisabled():
-            alliance_color = MatchState.getAlliance()
+        if not self._has_applied_operator_perspective or RobotState.is_disabled():
+            alliance_color = MatchState.get_alliance()
             if alliance_color is not None:
                 self.set_operator_perspective_forward(
                     self._RED_ALLIANCE_PERSPECTIVE_ROTATION
@@ -294,19 +294,19 @@ class Drivetrain(Subsystem, TunerSwerveDrivetrain):
     def _start_sim_thread(self):
         def _sim_periodic():
             # HAL sim time, not utils.get_current_time_seconds(): the Phoenix clock is
-            # wall-clock in sim, so headless tests that fast-forward time (stepTiming)
+            # wall-clock in sim, so headless tests that fast-forward time (step_timing)
             # would under-integrate physics. In the real-time GUI the two agree.
-            current_time = Timer.getTimestamp()
+            current_time = Timer.get_timestamp()
             delta_time = current_time - self._last_sim_time
             self._last_sim_time = current_time
 
             # use the measured time delta, get battery voltage from WPILib
-            self.update_sim_state(delta_time, RobotController.getBatteryVoltage())
+            self.update_sim_state(delta_time, RobotController.get_battery_voltage())
 
         # Run simulation at a faster rate so PID gains behave more reasonably
-        self._last_sim_time = Timer.getTimestamp()
+        self._last_sim_time = Timer.get_timestamp()
         self._sim_notifier = Notifier(_sim_periodic)
-        self._sim_notifier.startPeriodic(self._SIM_LOOP_PERIOD)
+        self._sim_notifier.start_periodic(self._SIM_LOOP_PERIOD)
 
     def add_vision_measurement(
         self,

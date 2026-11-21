@@ -14,8 +14,9 @@ RobotPy (Python WPILib) project for FRC Team 4973's 2027 robot on the Limelight 
 ## Rules
 
 - Version pins are exact and documented in `docs/versions.md`. Do not bump them in a feature PR.
-- The alpha-6 API is camelCase for wpilib (`isDisabled`), snake_case for phoenix6 (`get_state`).
-  `from wpimath import Pose2d` — there is no `wpimath.geometry`. `ChassisVelocities`, not `ChassisSpeeds`.
+- Since alpha-7 the whole API is snake_case (`is_disabled`, `Rotation2d.from_degrees`,
+  `pose.x` is a property). `from wpimath import Pose2d` — there is no `wpimath.geometry`.
+  `ChassisVelocities`, not `ChassisSpeeds`. No SmartDashboard: use `tunables` / NT struct topics.
 - Physical numbers (frame, mass, MOI, camera transforms) live only in `constants/robot_physical.py`.
 - `constants/tuner_constants.py` is Tuner X output: regenerate, don't hand-edit (except the
   `robot_physical` import for module positions).

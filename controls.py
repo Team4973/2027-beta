@@ -4,7 +4,7 @@ Pure logic: no hardware, no scheduler. The RobotContainer feeds raw axis values 
 and passes the result to Drivetrain.drive_field_centric().
 """
 
-from wpimath import ChassisVelocities, SlewRateLimiter, applyDeadband
+from wpimath import ChassisVelocities, SlewRateLimiter, apply_deadband
 
 
 class DriverControls:
@@ -32,7 +32,7 @@ class DriverControls:
 
     def _shape(self, raw: float) -> float:
         """Deadband (rescaled) then square, keeping sign. Output in [-1, 1]."""
-        x = applyDeadband(raw, self._deadband)
+        x = apply_deadband(raw, self._deadband)
         return x * abs(x)
 
     def compute(

@@ -12,11 +12,11 @@ from constants import robot_physical as rp
 
 def _connect_gamepad() -> GamepadSim:
     pad = GamepadSim(0)
-    pad.setAxesMaximumIndex(6)
-    pad.setAxesAvailable(0x3F)
-    pad.setButtonsMaximumIndex(26)
-    pad.setButtonsAvailable((1 << 26) - 1)
-    pad.notifyNewData()
+    pad.set_axes_maximum_index(6)
+    pad.set_axes_available(0x3F)
+    pad.set_buttons_maximum_index(26)
+    pad.set_buttons_available((1 << 26) - 1)
+    pad.notify_new_data()
     return pad
 
 
@@ -26,12 +26,12 @@ def test_left_stick_forward_drives_forward(control, robot):
         dt = robot.container.drivetrain
         dt.reset_pose(Pose2d())
         pad = _connect_gamepad()
-        pad.setLeftY(-1.0)  # pushed away from the driver
-        pad.notifyNewData()
+        pad.set_left_y(-1.0)  # pushed away from the driver
+        pad.notify_new_data()
         control.step_timing(seconds=1.0, autonomous=False, enabled=True)
         end = dt.get_pose()
 
-    assert end.X() > 1.0, f"expected forward travel, got x={end.X():.2f} m"
+    assert end.x > 1.0, f"expected forward travel, got x={end.x:.2f} m"
     assert abs(end.rotation().degrees()) < 5
 
 
@@ -41,8 +41,8 @@ def test_right_stick_right_rotates_clockwise(control, robot):
         dt = robot.container.drivetrain
         dt.reset_pose(Pose2d())
         pad = _connect_gamepad()
-        pad.setRightX(1.0)
-        pad.notifyNewData()
+        pad.set_right_x(1.0)
+        pad.notify_new_data()
         control.step_timing(seconds=1.0, autonomous=False, enabled=True)
         end = dt.get_pose()
 
@@ -55,9 +55,9 @@ def test_left_bumper_is_slow_mode(control, robot):
         dt = robot.container.drivetrain
         dt.reset_pose(Pose2d())
         pad = _connect_gamepad()
-        pad.setLeftY(-1.0)
-        pad.setLeftBumperButton(True)
-        pad.notifyNewData()
+        pad.set_left_y(-1.0)
+        pad.set_left_bumper_button(True)
+        pad.notify_new_data()
         # Long enough for the 4 m/s^2 slew limit to settle at the slow-mode speed.
         control.step_timing(seconds=1.5, autonomous=False, enabled=True)
         slow = dt.get_chassis_velocities().vx
@@ -81,5 +81,5 @@ def test_gamepad_bridge_message_drives_robot(control, robot):
         control.step_timing(seconds=1.0, autonomous=False, enabled=True)
         end = dt.get_pose()
 
-    assert end.X() > 0.5
+    assert end.x > 0.5
     assert end.rotation().degrees() < -20
