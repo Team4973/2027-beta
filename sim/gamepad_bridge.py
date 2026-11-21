@@ -65,7 +65,7 @@ class GamepadBridge:
                 continue
 
     def update(self) -> None:
-        """Call at the start of robotPeriodic. Writes port 0 only while a controller is present.
+        """Call at the start of robot_periodic. Writes port 0 only while a controller is present.
 
         Rewrites every loop, not just on change, because the GUI rewrites slot 0 on its own
         frame timer. Writing just before the scheduler reads the sticks wins that race.
@@ -87,20 +87,20 @@ class GamepadBridge:
 
         pad = GamepadSim(self._port)
         if msg.get("name") is None:
-            pad.setAxesAvailable(0)
-            pad.setButtonsAvailable(0)
-            pad.notifyNewData()
+            pad.set_axes_available(0)
+            pad.set_buttons_available(0)
+            pad.notify_new_data()
             return
-        pad.setName(msg["name"])
-        pad.setAxesMaximumIndex(NUM_AXES)
-        pad.setAxesAvailable((1 << NUM_AXES) - 1)
-        pad.setButtonsMaximumIndex(NUM_BUTTONS)
-        pad.setButtonsAvailable((1 << NUM_BUTTONS) - 1)
+        pad.set_name(msg["name"])
+        pad.set_axes_maximum_index(NUM_AXES)
+        pad.set_axes_available((1 << NUM_AXES) - 1)
+        pad.set_buttons_maximum_index(NUM_BUTTONS)
+        pad.set_buttons_available((1 << NUM_BUTTONS) - 1)
         for i, v in enumerate(sdl_axes_to_wpilib(msg["axes"])):
-            pad.setRawAxis(i, v)
+            pad.set_raw_axis(i, v)
         for i in range(NUM_BUTTONS):
-            pad.setRawButton(i, bool(msg["buttons"] >> i & 1))
-        pad.notifyNewData()
+            pad.set_raw_button(i, bool(msg["buttons"] >> i & 1))
+        pad.notify_new_data()
 
 
 def _reader_main() -> None:

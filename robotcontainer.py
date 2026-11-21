@@ -36,20 +36,20 @@ class RobotContainer:
     # -- bindings ----------------------------------------------------------
     def _configure_bindings(self) -> None:
         # Default: field-centric drive from the sticks. Documented in docs/controls.md.
-        self.drivetrain.setDefaultCommand(
-            self.drivetrain.run(self._drive_from_sticks).withName("DriveFromSticks")
+        self.drivetrain.set_default_command(
+            self.drivetrain.run(self._drive_from_sticks).with_name("DriveFromSticks")
         )
         # A (hold): brake in an X.
-        Trigger(self.gamepad.getSouthFaceButton).whileTrue(
-            self.drivetrain.run(self.drivetrain.brake).withName("Brake")
+        Trigger(self.gamepad.get_face_down_button).while_true(
+            self.drivetrain.run(self.drivetrain.brake).with_name("Brake")
         )
         # X: make "forward" the way the robot is currently facing.
-        Trigger(self.gamepad.getWestFaceButton).onTrue(
-            self.drivetrain.runOnce(self.drivetrain.seed_field_centric).withName("ResetHeading")
+        Trigger(self.gamepad.get_face_left_button).on_true(
+            self.drivetrain.run_once(self.drivetrain.seed_field_centric).with_name("ResetHeading")
         )
         # Reset slew limiters whenever we go from disabled to enabled.
-        Trigger(lambda: not RobotState.isDisabled()).onTrue(
-            commands2.cmd.runOnce(self.controls.reset).ignoringDisable(True)
+        Trigger(lambda: not RobotState.is_disabled()).on_true(
+            commands2.cmd.run_once(self.controls.reset).ignoring_disable(True)
         )
 
     def _drive_from_sticks(self) -> None:
@@ -58,10 +58,10 @@ class RobotContainer:
             self.drivetrain.drive_field_centric(vx, vy, omega)
             return
         v = self.controls.compute(
-            left_x=self.gamepad.getLeftX(),
-            left_y=self.gamepad.getLeftY(),
-            right_x=self.gamepad.getRightX(),
-            slow=self.gamepad.getLeftBumperButton(),
+            left_x=self.gamepad.get_left_x(),
+            left_y=self.gamepad.get_left_y(),
+            right_x=self.gamepad.get_right_x(),
+            slow=self.gamepad.get_left_bumper_button(),
         )
         self.drivetrain.drive_field_centric(v.vx, v.vy, v.omega)
 

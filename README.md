@@ -16,7 +16,7 @@ A 22" four-module swerve drive base. See `docs/versions.md` for the pins.
 2. In the sim window, open **System Joysticks** — your controller is listed there.
 3. Drag it into slot **0** in the **Joysticks** panel.
 4. In **Robot State**, click **Teleoperated**.
-5. Open **NetworkTables → SmartDashboard → Field** to see the robot on the field.
+5. Open the **Field** widget (NetworkTables `/Tunables/Field`) to see the robot on the field.
    Drive with the left stick, rotate with the right stick. Controls: `docs/controls.md`.
 
 macOS: if the controller doesn't appear, grant the terminal Bluetooth/Input Monitoring

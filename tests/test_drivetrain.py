@@ -20,7 +20,7 @@ def test_field_centric_drive_moves_robot(control, robot):
         control.step_timing(seconds=2.0, autonomous=False, enabled=True)
         end = dt.get_pose()
 
-    moved = end.X() - start.X()
+    moved = end.x - start.x
     assert moved > 1.5, f"expected >=1.5 m forward in 2 s at 1 m/s, got {moved:.2f} m"
-    assert abs(end.Y() - start.Y()) < 0.1
+    assert abs(end.y - start.y) < 0.1
     assert abs(end.rotation().radians()) < math.radians(5)
